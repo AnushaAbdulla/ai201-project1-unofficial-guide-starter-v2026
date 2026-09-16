@@ -55,7 +55,9 @@ in at least 4 of 5 tries.
 
 ---
 
-## 4. Something about your chunks
+## 4. Answer is complete without excess detail
+
+For at least 4 of my 5 test questions, the answer is a full sentence (doesn't cut off mid-thought) and stays under 3 sentences / 75 words.
 
 <!-- YOU WRITE THIS ONE.
 
@@ -77,7 +79,9 @@ in at least 4 of 5 tries.
 
 ---
 
-## 5. Your choice
+## 5. Named sources are correct, not just present
+
+For at least 4 of my 5 test questions, the source named in the answer is the document the answer's content actually came from.
 
 <!-- YOU WRITE THIS ONE TOO.
 
