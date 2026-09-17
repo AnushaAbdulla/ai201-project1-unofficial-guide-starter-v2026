@@ -22,10 +22,28 @@ to it, write down what you saw, and move on. That's a real observation about
 your pipeline, not giving up.
 """
 
+import re
 from dataclasses import dataclass
 
 import config
 from ingest import Document
+
+# ── Milestone 3 strategy: split on Markdown headers, not character count. ──
+#
+# This corpus (city_guides) is structured guides with real headers — each
+# "## Getting there" / "## Eat and drink" section is already a self-contained
+# idea, decided by the author, not by us. Splitting there costs nothing;
+# splitting mid-paragraph loses a thought.
+#
+# Numbers, from actually measuring the header sections across all 14 docs
+# (corpora/city_guides/documents/*.md): they run 23-711 characters, median
+# ~285. The short outliers are bare titles ("# Eating across the region")
+# that sit alone before the first "##" - fragments with nothing under them.
+MIN_CHUNK_CHARS = 150   # merge a fragment this short into the next section
+MAX_CHUNK_CHARS = 900   # no section in this corpus needs this; safety net
+CHUNK_OVERLAP = 100     # only used if MAX_CHUNK_CHARS ever forces a re-split
+
+_HEADER_SPLIT = re.compile(r"\n(?=#{1,6}\s)")
 
 
 @dataclass
@@ -80,24 +98,64 @@ def fallback_split(
     return chunks
 
 
+def _split_into_sections(text: str) -> list[str]:
+    """Split on Markdown headers, folding any too-short fragment forward."""
+    raw = [part.strip() for part in _HEADER_SPLIT.split(text) if part.strip()]
+
+    sections: list[str] = []
+    for part in raw:
+        if sections and len(sections[-1]) < MIN_CHUNK_CHARS:
+            sections[-1] = f"{sections[-1]}\n\n{part}"
+        else:
+            sections.append(part)
+    return sections
+
+
+def _split_oversized(section: str) -> list[str]:
+    """Fall back to paragraph-by-paragraph splitting for an over-long section."""
+    if len(section) <= MAX_CHUNK_CHARS:
+        return [section]
+
+    paragraphs = [p.strip() for p in section.split("\n\n") if p.strip()]
+    pieces: list[str] = []
+    current = ""
+    for para in paragraphs:
+        candidate = f"{current}\n\n{para}" if current else para
+        if len(candidate) > MAX_CHUNK_CHARS and current:
+            pieces.append(current)
+            tail = current[-CHUNK_OVERLAP:]
+            current = f"{tail}\n\n{para}"
+        else:
+            current = candidate
+    if current:
+        pieces.append(current)
+    return pieces
+
+
 def split_documents(documents: list[Document]) -> list[Chunk]:
     """
-    Split documents into chunks. ⚠️ REPLACE THE BODY OF THIS IN MILESTONE 3.
+    Split on Markdown headers. Each "## ..." section in this corpus is
+    already a self-contained idea, so splitting there (instead of at a fixed
+    character count) keeps chunks from cutting a thought in half.
 
-    Right now it just calls the fallback. That is the plain, generic behaviour
-    the brief is talking about.
-
-    When you write your own strategy, set `produced_by` to
-    "chunker.py::split_documents" so your README's Sample Chunks section names
-    the right function. `app.py chunks` prints that string for you.
-
-    Things worth thinking about before you write any code:
-      - Are your documents short posts or long guides?
-      - Is the useful information in one sentence, or spread over a paragraph?
-      - Would splitting on paragraph breaks keep more thoughts intact than
-        splitting on a character count?
+    See the module-level comment above for the reasoning behind
+    MIN_CHUNK_CHARS / MAX_CHUNK_CHARS / CHUNK_OVERLAP.
     """
-    return fallback_split(documents)
+    chunks: list[Chunk] = []
+    for doc in documents:
+        index = 0
+        for section in _split_into_sections(doc.text):
+            for piece in _split_oversized(section):
+                chunks.append(
+                    Chunk(
+                        text=piece,
+                        source=doc.source,
+                        index=index,
+                        produced_by="chunker.py::split_documents",
+                    )
+                )
+                index += 1
+    return chunks
 
 
 def describe(chunks: list[Chunk]) -> str:

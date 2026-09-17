@@ -29,8 +29,8 @@
 
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size: 150-711**
+**Overlap: 100**
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
      long sectioned guides don't want the same chunking, and "800 seemed
@@ -92,6 +92,8 @@ without reading what came before or after?
 
 ```
 ```
+
+
 
 ## Sample Answer
 
