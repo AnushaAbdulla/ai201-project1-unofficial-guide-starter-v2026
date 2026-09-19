@@ -100,14 +100,15 @@ without reading what came before or after?
 <!-- One complete question and answer, pasted as text, with the source line
      visible. Milestone 4. -->
 
-**Question:**
+**Question:** Which town is the most accessible?
 
 **Answer:**
 
 ```
+According to guide_accessibility.md, Thornby Wells is the easiest (most accessible) town in the region because it is flat, compact, and everything is within three minutes of everything else.
 ```
 
-**My relevance cutoff:**
+**My relevance cutoff:** 0.6
 
 <!-- The number you set in config.py, and how you got there.
 
@@ -120,7 +121,16 @@ without reading what came before or after?
 
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| Which town is the most accessible? | yes | 0.494 |
+| What is the best time to visit Elder Ness? | yes | 0.370 |
+| What is the best way to travel to Kestrelford? | yes | 0.451 |
+| Where can I eat late at night? | yes | 0.525 |
+| Which town has the best nightlife? | yes | 0.557 |
+| What is the capital of Mongolia? | no | 0.887 |
+| How do I change the oil in a diesel engine? | no | 0.897 |
+| Who won the 1994 World Cup? | no | 0.903 |
+| What is the recommended dosage of ibuprofen for a headache? | no | 0.836 |
+| How do I write a for loop in Rust? | no | 0.853 |
 
 ## How I Used AI
 

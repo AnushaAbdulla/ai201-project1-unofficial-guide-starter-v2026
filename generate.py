@@ -273,7 +273,7 @@ def generate(prompt: str, system: str | None = None, cache: bool = True) -> str:
 
 # ─── The grounded answer ─────────────────────────────────────────────────────
 
-GROUNDING_INSTRUCTION = """You answer questions using only the documents provided to you.
+GROUNDING_INSTRUCTION = """Answer using only the information in the documents below. If they don't cover it, say you don't have enough information.
 
 Rules:
 - Use only the information in the documents below. Do not use anything you know from elsewhere.
