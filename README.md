@@ -21,6 +21,7 @@
 
 ## What This Does
 
+This is a question-answering system built on the `city_guides` corpus. The corpus is a set of Markdown travel guides covering various towns in a fictional region, and travel information relating to them. It is built to answer practical, specific questions a visitor might ask, like when to visit a particular town, or where to find a meal late at night. The way it works is by splitting each guide into topic-sized chunks, it embeds these, and retrieves the closest matches for a given question. There is a relevance gate that checks how close the best match is before deciding whether to answer at all. 
 <!-- Three or four sentences. Which corpus you picked, and the kinds of
      questions your system answers. Write it for someone who has never seen
      this repo.
@@ -133,6 +134,17 @@ According to guide_accessibility.md, Thornby Wells is the easiest (most accessib
 | How do I write a for loop in Rust? | no | 0.853 |
 
 ## How I Used AI
+
+1. 
+     I asked Claude "Here are five acceptance criteria for a retrieval system. For each one, tell me exactly how you would test it using only what the sentence says. The last two are not so good suggest improvements".
+
+     I showed me what it would expect the system to show and how to test which was super straightforward, but then it suggested checking source hallucinations and excessive detail.
+
+2. 
+     I asked Claude "Where in this repo does the prompt live?"
+
+     It returned a file name, a line number, and an explination of what exsited based on comments.
+
 
 <!-- Two specific moments. For each: what you asked for, what came back, and
      what you changed about it.
