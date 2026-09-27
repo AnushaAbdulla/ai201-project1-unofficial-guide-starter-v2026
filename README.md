@@ -1,19 +1,6 @@
 # The Unofficial Guide
 
-<!-- Replace this line with your name and which corpus you picked. -->
-
-> **This file is your submission.** Fill it in as you go — most sections get
-> written during the milestone that produces them, not at the end.
->
-> How the starter works, and every command you'll need, is in `RUNNING.md`.
-> Leave that file alone.
->
-> **Paste everything as text.** No screenshots, no video. A typed table gets
-> full credit; a picture of the same table gets none.
->
-> Delete these instruction blocks as you replace them. The `<!-- -->` comments
-> are notes to you and don't show up when the page renders — you can leave them
-> or remove them.
+**Anusha Abdulla** · Corpus: `city_guides`
 
 ---
 
@@ -25,14 +12,12 @@ This is a question-answering system built on the `city_guides` corpus. The corpu
 
 ## Chunking Strategy
 
-**Chunk size: 150-711**
-**Overlap: 100**
+**Chunk size: 174-759 characters (94 chunks, average 319), split on Markdown headers**
+**Overlap: none in practice (100 characters, only used if a section goes over 900)**
 
 Each section already answers one kind of question on its own. So the chunks follow the headers instead of a character count. Measured across all 14 guides, the sections run 23 to 711 characters with a median around 285, so no section needs to be cut to fit.
 
-The 150-character minimum handles the shortest pieces after splitting, which are the headers. On their own they are too short to answer anything, so they are merged into the section that follows.
-
-Overlap exists so a thought cut in half by a fixed window still appears whole in one chunk. 
+The 150-character minimum handles the shortest pieces after splitting, which are the headers. On their own they are too short to answer anything, so they are merged into the section that follows. In Unit 2 I made it so that each chunk also starts with its guide's town name, because "## Getting there" on its own doesn't say which town it's about. That's why the final chunks run 174-759 characters rather than the raw 23-711.
 
 ## Sample Chunks
 

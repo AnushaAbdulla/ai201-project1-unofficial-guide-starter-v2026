@@ -23,8 +23,7 @@ For at least 4 of my 5 test questions, the retrieved chunks include one that
 contains the answer.
 
 **Why this target:**
-<!-- e.g. "One of my questions is about a topic only two documents mention, so
-     I expect that one to be hard." -->
+We want to make sure the model can see the proper chunks and find information in them.
 
 ---
 
@@ -33,8 +32,7 @@ contains the answer.
 Every answer the system produces names at least one source document.
 
 **Why this target:**
-<!-- Why all five and not four? What about your setup makes that achievable —
-     or what would have to go wrong for it not to be? -->
+Every answer should carry a filename so the user (and we) can reference it and double-check the model.
 
 ---
 
@@ -50,8 +48,7 @@ in at least 4 of 5 tries.
      just keep five of them, or the "4 of 5" above has nothing to be 4 of. -->
 
 **Why this target:**
-<!-- What did your distances look like when you set the cutoff in Milestone 4?
-     Was there a clean gap, or did the two groups overlap? -->
+We want to ensure the model stays inside the limits we set: the knowledge base.
 
 ---
 
@@ -74,8 +71,7 @@ For at least 4 of my 5 test questions, the answer is a full sentence (doesn't cu
 
 
 **Why this target:**
-
-
+Unnecessarily long answers might cause the model to begin to hallucinate.
 
 ---
 
@@ -94,8 +90,7 @@ For at least 4 of my 5 test questions, the source named in the answer is the doc
 
 
 **Why this target:**
-
-
+This is another way of preventing the model from hallucinating.
 
 ---
 
