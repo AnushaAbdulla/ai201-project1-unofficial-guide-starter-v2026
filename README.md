@@ -22,77 +22,55 @@
 ## What This Does
 
 This is a question-answering system built on the `city_guides` corpus. The corpus is a set of Markdown travel guides covering various towns in a fictional region, and travel information relating to them. It is built to answer practical, specific questions a visitor might ask, like when to visit a particular town, or where to find a meal late at night. The way it works is by splitting each guide into topic-sized chunks, it embeds these, and retrieves the closest matches for a given question. There is a relevance gate that checks how close the best match is before deciding whether to answer at all. 
-<!-- Three or four sentences. Which corpus you picked, and the kinds of
-     questions your system answers. Write it for someone who has never seen
-     this repo.
-
-     Milestone 5. -->
 
 ## Chunking Strategy
 
 **Chunk size: 150-711**
 **Overlap: 100**
 
-<!-- What about YOUR documents made you pick these numbers? Short posts and
-     long sectioned guides don't want the same chunking, and "800 seemed
-     reasonable" earns nothing. Point at something you noticed when you read
-     the documents in Milestone 1.
+Each section already answers one kind of question on its own. So the chunks follow the headers instead of a character count. Measured across all 14 guides, the sections run 23 to 711 characters with a median around 285, so no section needs to be cut to fit.
 
-     If you changed your mind partway through, say so and say why. That's worth
-     more than pretending you got it right first time.
+The 150-character minimum handles the shortest pieces after splitting, which are the headers. On their own they are too short to answer anything, so they are merged into the section that follows.
 
-     Milestone 3. -->
+Overlap exists so a thought cut in half by a fixed window still appears whole in one chunk. 
 
 ## Sample Chunks
 
-<!-- Five chunks, pasted as text. Label each one and name the file it came from
-     AND the function that produced it — the grader checks your code against
-     what you claim here.
+======================================================================
+Chunk 1  |  source: guide_accessibility.md#0  |  produced by: chunker.py::split_documents
+======================================================================
+# Getting around the region with limited mobility
 
-     `python app.py chunks -n 5` prints all three for you. Copy them straight
-     across.
-
-     Milestone 3. -->
+An honest assessment rather than a promotional one. Some of these places are
+difficult and it is better to know in advance.
 
 ======================================================================
-Chunk 1  |  source: thread_bike_commute.txt#0  |  produced by: chunker.py::fallback_split
+Chunk 2  |  source: guide_corry_vale.md#5  |  produced by: chunker.py::split_documents
 ======================================================================
-THREAD: Is a bike worth it for a 20 minute walk commute?
+## Where to stay
 
---- reply 1 (14 votes) ---
-Yeah. Cuts an 18 minute walk to about 6. The thing nobody mentions is storage — covered bike parking exists at three buildings and is full by 9am at all three.
+Perhaps thirty beds in the entire valley, spread across two pubs and a handful of farmhouse rooms. In summer these are booked months ahead. Camping is permitted on two marked fields and nowhere else.
 
---- reply 2 (9 votes) ---
-Counterpoint, I sold mine. Between November and March the paths are either icy or salted and salt destroys a drivetrain in one season.
+======================================================================
+Chunk 3  |  source: guide_givens_mill.md#2  |  produced by: chunker.py::split_documents
+======================================================================
+## Getting around
 
---- reply 3 (22 votes) ---
-Both true. I keep a cheap bike for September to November and walk the rest of the year. Total cost was about $120 for the bike and I don't care what happens to it.
+Everything is on one street along the river. The mill is at one end and the church at the other, eight minutes apart. The riverside path continues in both directions for as far as you want to walk.
 
---- reply 4 (5 votes) ---
-If you do get one, the campus does free registration and it's the only reason I got mine back after it was taken.
+======================================================================
+Chunk 4  |  source: guide_kestrelford.md#4  |  produced by: chunker.py::split_documents
+======================================================================
+## What to see
 
-For each one, ask: could someone answer a question using only this,
-without reading what came before or after?
+The market square on a Saturday morning is the main event and has run continuously since the 1400s. The parish church has a 13th-century tower you can climb for £2. The old trackbed walk runs six miles to the next village along an easy gradient and is the best half-day here.
 
-**Chunk 2** — source: `` — produced by: ``
+======================================================================
+Chunk 5  |  source: guide_pellew_sands.md#6  |  produced by: chunker.py::split_documents
+======================================================================
+## When to go
 
-```
-```
-
-**Chunk 3** — source: `` — produced by: ``
-
-```
-```
-
-**Chunk 4** — source: `` — produced by: ``
-
-```
-```
-
-**Chunk 5** — source: `` — produced by: ``
-
-```
-```
+June and September for the beach without the crowds. July and August are busy and the town is at its most itself, for better and worse. Winter is bleak, largely closed, and has a following among people who like that sort of thing.
 
 
 
@@ -146,18 +124,6 @@ According to guide_accessibility.md, Thornby Wells is the easiest (most accessib
      It returned a file name, a line number, and an explination of what exsited based on comments.
 
 
-<!-- Two specific moments. For each: what you asked for, what came back, and
-     what you changed about it.
-
-     "I asked Claude to write the chunking function from my notes. It ignored
-     the overlap, so I added that myself" is the level of detail we're after.
-     "I used AI to help me code" is not.
-
-     Milestone 5. -->
-
-**1.**
-
-**2.**
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
@@ -168,33 +134,49 @@ According to guide_accessibility.md, Thornby Wells is the easiest (most accessib
 
 # Unit 2
 
-<!-- These sections get ADDED to what's already above. Don't delete or rewrite
-     unit 1 — the point is that someone can see what you said before you knew
-     how it went. -->
 
 ## Run Log — Before
 
-<!-- Your five criteria, three runs each. `python run_eval.py --label before`
-     runs the questions, puts the OUT_OF_SCOPE ones through the gate, and
-     writes it all into results/ for you. Targets come from criteria.md; the
-     verdict column is your call.
-
-     Criterion 3 is measured in one deterministic pass rather than three, so
-     the same number goes in all three run columns. That's correct, not lazy.
-
-     Milestone 1. -->
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Answer is complete without excess detail | 4 of 5 | 4/5 | 4/5 | 3/5 | MISSED |
+| 5. Named sources are correct, not just present | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
 
-<!-- Underneath, paste the REAL output for each criterion from one of your
-     runs — the actual text your system produced, not a description of it.
-     Name the file and function that produced it. -->
+1. Which town is the most accessible? — run 1
+     
+     Answer: Based on the documents, Thornby Wells is described as the easiest town in the region for getting around with limited mobility. 
+     
+     Source: guide_accessibility.md
+
+2. Should I take cash or card to elder ness? — run 1
+
+     Answer: Cash is still useful at markets and in the smaller villages, and Elder Ness has one shop which is closed on Sundays and after 5pm. 
+     
+     Source: guide_eating.md
+
+3. What is the best way to travel to Kestrelford? — run 1
+
+    Answer: Based on the provided documents, you can travel to Kestrelford by bus (running roughly hourly on weekdays, every two hours on Saturdays, and not on Sundays from Brightwater), on foot along the old railway trackbed (which now serves as a walking route), or by driving (taking 55 minutes, with the last eight miles on a single-track road). 
+     
+     Source: guide_kestrelford.md
+
+4. Where can I eat late at night? — run 1
+
+    Answer: Based on the provided documents, kitchens across the region stop serving at 9pm and often earlier, and everything in Halden Bay closes by 9pm. 
+     
+     Source: guide_eating.md
+
+5. What should I do in Marchwood? — run 1
+
+    Answer: Based on the provided documents, you can visit the city museum, which is free and has an excellent industrial floor, and check out the covered market that has operated since 1863 (best visited on a weekday morning). You can also take a canal walk from Northgate to the old lock (which takes 40 minutes) and eat in the Northgate district, where about thirty restaurants are located. 
+     
+     Source: guide_marchwood.md
+ 
+
 
 ## Verdicts
 
@@ -207,13 +189,15 @@ According to guide_accessibility.md, Thornby Wells is the easiest (most accessib
 
      Milestone 2. -->
 
+Note: Hello! I did rewrite my questions before beginning the experiments. This was done under the guidance of a mentor (TF? I forgot the acronym) during class. Thank you!
+
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 | Retrieved chunk contains the answer | MET | Every chunk contained the answer to the question. The code I wrote to check and the answers it was checking against was insufficient, however the answer was correctly present in the chunk intended.  |
+| 2 | Every answer names a source | MET | Every answer named a source whether embeded in the sentence or declared at the end of a response.  |
+| 3 | Gate stops out-of-corpus questions | MET | None of the out-of-corpus questions were answered all were refused outright. |
+| 4 | Answer is complete without excess detail | MISSED | Some answers provided excessive detail. While I rewrote and changed some questions this was not sufficient as the model was sometimes unclear on how much information the user required.  |
+| 5 | Named sources are correct, not just present | MET | All sources were named and correct in every single response. |
 
 ## Diagnoses
 
