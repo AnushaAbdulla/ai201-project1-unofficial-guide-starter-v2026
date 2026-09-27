@@ -230,8 +230,10 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
 ## The Improvement
 
 **What I changed:**
+I realized I was using default chunks, so I changed it to my own. 
 
 **Why I picked it:**
+I had built this chunk format thinking it would be better and totally forgot to use it, so this is the perfect way to test. 
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
@@ -243,11 +245,11 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 3/5 | 3/5 | 3/5 | MISSED |
+| 2. Every answer names a source | 5 of 5 | 3/5 | 3/5 | 3/5 | MISSED |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. Answer is complete without excess detail | 4 of 5 | 1/5 | 2/5 | 2/5 | MISSED |
+| 5. Named sources are correct, not just present | 4 of 5 | 3/5 | 3/5 | 3/5 | MISSED |
 
 **Did it help?**
 
@@ -258,6 +260,8 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
 
      Milestone 4. -->
 
+     No, way more criterion were missed, and for questions that were easy to find in the documents!
+
 ## What's Still Broken
 
 <!-- For each criterion still missed after your fix: what you'd do about it,
@@ -267,6 +271,7 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
      not.
 
      Milestone 5. -->
+    
 
 ## What I'd Do Differently
 
@@ -274,3 +279,4 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
      differently, and why?
 
      Milestone 5. -->
+

@@ -45,6 +45,12 @@ CHUNK_OVERLAP = 100     # only used if MAX_CHUNK_CHARS ever forces a re-split
 
 _HEADER_SPLIT = re.compile(r"\n(?=#{1,6}\s)")
 
+# The town name only appears in each guide's "# Title" line, so once sections
+# are split apart, "## Getting there" no longer says which town it's about —
+# and every guide's "## Practical notes" is word-for-word identical. Carrying
+# the title into every chunk puts the town name back.
+_TITLE = re.compile(r"^#\s+(.+)$", re.MULTILINE)
+
 
 @dataclass
 class Chunk:
@@ -143,9 +149,14 @@ def split_documents(documents: list[Document]) -> list[Chunk]:
     """
     chunks: list[Chunk] = []
     for doc in documents:
+        match = _TITLE.search(doc.text)
+        title = match.group(1).strip() if match else ""
         index = 0
         for section in _split_into_sections(doc.text):
             for piece in _split_oversized(section):
+                # The first chunk already starts with the "# Title" line.
+                if title and not piece.startswith("# "):
+                    piece = f"{title}\n{piece}"
                 chunks.append(
                     Chunk(
                         text=piece,
