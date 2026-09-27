@@ -271,7 +271,7 @@ I had built this chunk format thinking it would be better and totally forgot to 
      not.
 
      Milestone 5. -->
-    
+     The reason it's broken here is because the title/town name is cut off in all the chunks! This means the model can find information but not tie it to a certain city.
 
 ## What I'd Do Differently
 
@@ -280,3 +280,8 @@ I had built this chunk format thinking it would be better and totally forgot to 
 
      Milestone 5. -->
 
+     I wouldn't rewtite criteria yet. I think criteria 5 is weak, but the real issue here is likely still my chunking and judging code. 
+     
+## How I used AI:
+
+This unit I asked AI to show me where my certain answers were showing up in the chunk rankings. With this information I looked and noticed I wasn't using my own chunks yet. 
