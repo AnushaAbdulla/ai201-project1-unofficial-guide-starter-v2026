@@ -219,6 +219,14 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
 
      Milestone 3. -->
 
+    4. Answer is complete without excess detail | 4 of 5 | 4/5 | 4/5 | 3/5 | MISSED |
+
+    All 4 of my misses occurred in the same criterion. I believe I could tighten my criterion number 5 is almost a repeat. 
+
+    For Run 1, Run 2, and Run 3 one miss is in "Where can I eat late at night?". I think the issue here is more with the question than the criterion. The question does not have a direct answer. I wrote this question early on before I had fully read all of the corpus material. I did however leave it on purpose to see what the model would come up with seeing as there are no direct key words that give an answer. The model was unable to make an inference on a "late" dining spot. 
+
+    The 4th miss here is "Which town is the most accessible?" in run 3. I chose to count this as a miss beacuse it includes information about the land. This might be useful in some cases, however the other 2 runs were able to explain the land and give a compelete answer in fewer words and with less information. This run goes into excessive detail about the land's features.  
+
 ## The Improvement
 
 **What I changed:**
