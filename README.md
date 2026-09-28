@@ -204,21 +204,21 @@ Note: Hello! I did rewrite my questions before beginning the experiments. This w
 
      Milestone 3. -->
 
-    4. Answer is complete without excess detail | 4 of 5 | 4/5 | 4/5 | 3/5 | MISSED |
+All four misses are on criterion 4 (answer is complete without excess detail), but they come from two different causes. These Before runs used the starter's `chunker.py::fallback_split` (fixed 800-character windows, 120 overlap), because I hadn't rebuilt the index after writing my own chunker.
 
-    All 4 of my misses occurred in the same criterion. I believe I could tighten my criterion number 5 is almost a repeat. 
+**Miss 1–3: "Where can I eat late at night?" (all three runs) — chunking → retrieval, then generation.**
+I first thought the corpus had no direct answer, but it does: `guide_marchwood.md` says Marchwood "keeps later hours than anywhere else in the region — kitchens serve until 10:30pm, and until midnight on Fridays and Saturdays." The fixed 800-character window put that sentence in chunk `guide_marchwood.md#1`, which starts mid-sentence in the transport section ("til midnight. A day ticket…"), then covers "Eat and drink", then runs into "What to see". Because that one chunk mixes transport, food, and sights, it ranked 13th, and only the top 5 are retrieved. What was retrieved instead was `guide_eating.md`'s line "Outside Marchwood, kitchens across the region stop serving at 9pm", which only answers the question by implication. The grounding prompt tells the model "Do not guess", so it repeated the negative part ("kitchens stop at 9pm") and never named Marchwood as the place that stays open.
 
-    For Run 1, Run 2, and Run 3 one miss is in "Where can I eat late at night?". I think the issue here is more with the question than the criterion. The question does not have a direct answer. I wrote this question early on before I had fully read all of the corpus material. I did however leave it on purpose to see what the model would come up with seeing as there are no direct key words that give an answer. The model was unable to make an inference on a "late" dining spot. 
-
-    The 4th miss here is "Which town is the most accessible?" in run 3. I chose to count this as a miss beacuse it includes information about the land. This might be useful in some cases, however the other 2 runs were able to explain the land and give a compelete answer in fewer words and with less information. This run goes into excessive detail about the land's features.  
+**Miss 4: "Which town is the most accessible?" (run 3) — generation.**
+Retrieval was fine: the top chunk, `guide_accessibility.md#0`, has the answer. But the sentence naming Thornby Wells sits in one paragraph with every supporting detail — flat, compact, free parking, central station, level pump room and gardens. The grounding prompt limits length ("Two or three sentences is usually enough") but not scope — it never says to answer only what was asked. With caching off, each run is a fresh sample, and in run 3 the model packed the whole paragraph into its answer instead of just naming the town. Runs 1 and 2 had the same chunk and the same prompt and stayed short, so this is the prompt allowing excess detail, not requiring it.
 
 ## The Improvement
 
 **What I changed:**
-I realized I was using default chunks, so I changed it to my own. 
+Switched chunking from `chunker.py::fallback_split` (fixed 800-character windows) to `chunker.py::split_documents` (one chunk per `##` section), indexed as variant `headers`, and ran the same five questions against it: `python run_eval.py --variant headers --label after`.
 
 **Why I picked it:**
-I had built this chunk format thinking it would be better and totally forgot to use it, so this is the perfect way to test. 
+It targets misses 1–3: the late-night answer ranked 13th because the fixed window mixed Marchwood's transport, food, and sights into one chunk, so a chunk containing only Marchwood's "Eat and drink" section should sit much closer to a question about eating and make it into the top 5. It doesn't target miss 4, which is a generation problem — that would need a prompt change, and I kept this to one change so I could tell what it did.
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
@@ -245,7 +245,17 @@ I had built this chunk format thinking it would be better and totally forgot to 
 
      Milestone 4. -->
 
-     No, way more criterion were missed, and for questions that were easy to find in the documents!
+No, it made things worse. Before, only criterion 4 was missed; after, criteria 1, 2, 4, and 5 are all missed, and two questions that used to work (Kestrelford, cash or card) now fail every run. I know it was the chunking and not the model because I checked where the chunk containing each answer ranked in both indexes (`store.py::search` with `top_k` set to all 94 chunks), and only the top 5 are sent to the model.
+
+**Why: splitting at headers cut each section off from the name of its town.** In every guide, the town name only appears in the `# Title` line at the top. With fixed 800-character windows, the title and the first sections landed in the same chunk. With header splitting, the title and intro became their own chunk, and every section after it no longer mentions which town it's about.
+
+- **Kestrelford.** The "Getting there" chunk (no railway, buses from Brightwater, 55-minute drive) starts "No railway station…" and never says "Kestrelford". It dropped from **1st to 75th** of 94. The model got general road notes from `guide_regional_transport.md` and `guide_walking.md` instead, and said the documents don't mention the best way to travel there.
+- **Cash or card.** Every guide's "Practical notes" section is word-for-word identical ("Cash is still useful at the market… cards are accepted almost everywhere now"). Without the town name, the search can't tell Elder Ness's copy from any other: Elder Ness's own ranked 10th, and the top 5 included the identical Brightwater, Kestrelford and Corry Vale copies. The model most likely couldn't tie any of them to Elder Ness, so it refused all three runs.
+- **Late night.** This is the miss the change was meant to fix, and it only half worked. Marchwood's "Eat and drink" section is now its own chunk and moved from **13th to 8th**, still outside the top 5. The question doesn't name a town, so Marchwood's food section looks like every other town's food section — the top 5 were the "Eat and drink" sections of Pellew Sands, Kestrelford, Corry Vale and Elder Ness. Meanwhile, the "Outside Marchwood… 9pm" line that at least hinted at the answer dropped from 2nd to 6th, so the model got nothing useful and refused.
+
+**One thing got better:** the accessibility answer was short and complete in all three runs (the Before run 3 had excess detail). The right chunk was retrieved in both versions (1st before, 4th after), so I can't attribute this to the chunking change. It may just be run-to-run variation in how the model writes.
+
+**Takeaway:** header splitting was the right idea for this corpus, since the sections are self-contained. But it needs the town name carried into each chunk. That's the next change I'd make.
 
 ## What's Still Broken
 
